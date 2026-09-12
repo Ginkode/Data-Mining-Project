@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - portfolio-cleanup
+      - portfolio-final-cleanup
 
 jobs:
   test:
@@ -24,7 +24,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run model comparison
-        env:
-          MPLBACKEND: Agg
-        run: python src/model_comparison.py
+      - name: Run unit tests
+        run: pytest -q
