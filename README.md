@@ -1,6 +1,6 @@
 # Alzheimer's Disease Classification with Machine Learning
 
-Machine-learning project based on the **OASIS longitudinal MRI dataset**. The goal is to distinguish visits from subjects classified as **Demented** and **Nondemented** using demographic, cognitive and MRI-derived features.
+Machine-learning project based on the **OASIS-2 longitudinal MRI dataset**. The goal is to distinguish visits from subjects classified as **Demented** and **Nondemented** using demographic, cognitive and MRI-derived features.
 
 This repository was originally developed as a university Data Mining project and has been refactored into a reproducible portfolio project.
 
@@ -34,7 +34,7 @@ The current models use:
 
 ## Longitudinal validation
 
-The OASIS dataset contains repeated visits for the same subjects. A standard row-wise split can therefore place one visit from a subject in training and another visit from the same subject in validation.
+The OASIS-2 dataset contains repeated visits for the same subjects. A standard row-wise split can therefore place one visit from a subject in training and another visit from the same subject in validation.
 
 To reduce this leakage risk, the refactored code uses **Leave-One-Group-Out cross-validation**, where `Subject ID` is the grouping variable. All visits from the held-out subject remain outside the training set for that fold.
 
@@ -42,11 +42,11 @@ To reduce this leakage risk, the refactored code uses **Leave-One-Group-Out cros
 
 Subjects labelled `Converted` transition from nondemented to demented during follow-up. Treating every visit from those subjects as demented would incorrectly assign their future status to earlier visits.
 
-For this primary **current-status binary classification**, `Converted` observations are therefore excluded. A separate future extension could use baseline visits from converted subjects to build a true conversion-risk prediction task.
+For this primary **current-status binary classification**, `Converted` observations are therefore excluded. A future extension could instead use baseline visits from converted subjects to build a true conversion-risk prediction task.
 
 ## Results
 
-The refactored pipeline was executed automatically in GitHub Actions on Python 3.12. The current subject-aware cross-validation results are:
+The refactored pipeline was executed in a clean Python 3.12 environment before the OASIS data file was removed from the public repository. The subject-aware cross-validation results were:
 
 | Model | Accuracy | Balanced Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|---:|
@@ -56,7 +56,7 @@ The refactored pipeline was executed automatically in GitHub Actions on Python 3
 
 Among the three baseline models, **Logistic Regression performs best across all reported metrics** under this validation setup.
 
-These values should be interpreted as project results rather than clinical-performance claims. The dataset is relatively small and the project is intended as an educational machine-learning analysis, not as a diagnostic tool.
+These values are educational project results, not clinical-performance claims. The dataset is relatively small and the analysis is not intended to be used as a diagnostic system.
 
 ## Repository structure
 
@@ -65,8 +65,12 @@ Data-Mining-Project/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── oasis_longitudinal.csv
-├── Presentazione (1).pdf
+├── data/
+│   └── README.md
+├── presentation/
+│   └── alzheimer_prediction_presentation.pdf
+├── tests/
+│   └── test_data_utils.py
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
@@ -80,14 +84,21 @@ Data-Mining-Project/
 
 ## How to run
 
-Create a virtual environment, install the dependencies and run any script from the repository root:
+1. Follow `data/README.md` to obtain OASIS-2 data under the applicable Data Use Agreement.
+2. Save the demographic/longitudinal CSV as:
+
+```text
+data/oasis_longitudinal.csv
+```
+
+3. Install dependencies and run the comparison:
 
 ```bash
 pip install -r requirements.txt
 python src/model_comparison.py
 ```
 
-The code locates the dataset with a path relative to the repository, so it does not depend on a specific local Windows username or folder.
+The code uses paths relative to the repository and therefore does not depend on a specific local Windows username or folder.
 
 ## Evaluation metrics
 
@@ -99,15 +110,19 @@ The comparison script reports:
 - Recall
 - F1-score
 
-For a health-related classification task, accuracy alone can be misleading; recall and class-balanced metrics are useful for understanding errors on the positive class.
+For a health-related classification task, accuracy alone can be misleading; recall and class-balanced metrics help describe performance on the positive class.
 
-## Reproducibility
+## Reproducibility and tests
 
-A GitHub Actions workflow installs the dependencies and executes the model-comparison script automatically. This provides a basic smoke test showing that the project can run in a clean Python environment outside the original development machine.
+The public repository does not contain the OASIS data file. The GitHub Actions workflow therefore runs **dataset-independent unit tests** that validate the preprocessing logic. After an authorized user adds the dataset locally, the full model comparison can be reproduced with the command above.
 
-## Data source
+## Data source and acknowledgement
 
-The project uses the OASIS longitudinal dataset. If reusing or redistributing the data, consult the official OASIS documentation and terms of use and provide the required attribution.
+This project uses **OASIS-2: Longitudinal MRI Data in Nondemented and Demented Older Adults**. OASIS requires acceptance of its Data Use Agreement and acknowledgement of the data when results derived from it are publicly presented.
+
+Relevant publication:
+
+Marcus, D. S., Fotenos, A. F., Csernansky, J. G., Morris, J. C., & Buckner, R. L. (2010). *Open Access Series of Imaging Studies: Longitudinal MRI Data in Nondemented and Demented Older Adults*. Journal of Cognitive Neuroscience, 22(12), 2677–2684. https://doi.org/10.1162/jocn.2009.21407
 
 ## Future improvements
 
@@ -115,4 +130,4 @@ The project uses the OASIS longitudinal dataset. If reusing or redistributing th
 - add hyperparameter tuning with nested/group-aware validation;
 - add ROC-AUC / PR-AUC using out-of-fold scores;
 - improve feature engineering and missing-data handling;
-- add automated unit tests.
+- expand automated unit tests.
