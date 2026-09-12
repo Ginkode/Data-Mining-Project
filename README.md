@@ -44,6 +44,20 @@ Subjects labelled `Converted` transition from nondemented to demented during fol
 
 For this primary **current-status binary classification**, `Converted` observations are therefore excluded. A separate future extension could use baseline visits from converted subjects to build a true conversion-risk prediction task.
 
+## Results
+
+The refactored pipeline was executed automatically in GitHub Actions on Python 3.12. The current subject-aware cross-validation results are:
+
+| Model | Accuracy | Balanced Accuracy | Precision | Recall | F1 |
+|---|---:|---:|---:|---:|---:|
+| Decision Tree | 0.798 | 0.782 | 0.774 | 0.701 | 0.736 |
+| Logistic Regression | **0.833** | **0.820** | **0.814** | **0.756** | **0.784** |
+| SVM (RBF) | 0.795 | 0.774 | 0.787 | 0.669 | 0.723 |
+
+Among the three baseline models, **Logistic Regression performs best across all reported metrics** under this validation setup.
+
+These values should be interpreted as project results rather than clinical-performance claims. The dataset is relatively small and the project is intended as an educational machine-learning analysis, not as a diagnostic tool.
+
 ## Repository structure
 
 ```text
@@ -53,6 +67,9 @@ Data-Mining-Project/
 ├── .gitignore
 ├── oasis_longitudinal.csv
 ├── Presentazione (1).pdf
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 └── src/
     ├── data_utils.py
     ├── decision_tree.py
@@ -84,6 +101,10 @@ The comparison script reports:
 
 For a health-related classification task, accuracy alone can be misleading; recall and class-balanced metrics are useful for understanding errors on the positive class.
 
+## Reproducibility
+
+A GitHub Actions workflow installs the dependencies and executes the model-comparison script automatically. This provides a basic smoke test showing that the project can run in a clean Python environment outside the original development machine.
+
 ## Data source
 
 The project uses the OASIS longitudinal dataset. If reusing or redistributing the data, consult the official OASIS documentation and terms of use and provide the required attribution.
@@ -94,4 +115,4 @@ The project uses the OASIS longitudinal dataset. If reusing or redistributing th
 - add hyperparameter tuning with nested/group-aware validation;
 - add ROC-AUC / PR-AUC using out-of-fold scores;
 - improve feature engineering and missing-data handling;
-- add automated tests and continuous integration.
+- add automated unit tests.
