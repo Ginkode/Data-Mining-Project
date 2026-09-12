@@ -82,6 +82,8 @@ Data-Mining-Project/
     └── model_comparison.py
 ```
 
+The original university presentation is kept in **Italian**. The README is in English so the project can be reviewed quickly in an international context without rewriting the original academic material.
+
 ## How to run
 
 1. Follow `data/README.md` to obtain OASIS-2 data under the applicable Data Use Agreement.
